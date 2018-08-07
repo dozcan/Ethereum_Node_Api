@@ -261,10 +261,10 @@ app.post('/Identity',function(req,res){
              
                 
 
-                    await contractClone.methods.setIdentity(hashedData,blockchainDataName,blockchainDataSurname,data).
+                    await contractInstance.methods.setIdentity(hashedData,blockchainDataName,blockchainDataSurname,data).
                     send({
                       from:accounts[0],
-                      gas:'1000000000'
+                      gas:'100000000'
                     },function (err, result){
                         if(!err){
                           
