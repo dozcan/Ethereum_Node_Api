@@ -5,9 +5,9 @@ const requestTypeError = require('./enum.js');
 const Web3 = require('web3');
 const cors = require('cors');
 
-//var requestUrl = "http://"+process.env.NODE_IP+":"+process.env.NODE_PORT;
+var requestUrl = "http://"+process.env.NODE_IP+":"+process.env.NODE_PORT;
 // default rpc port 8545, ikinci container portuna dönüştürülebilinir.
-var web3 = new Web3(new Web3.providers.HttpProvider("http://18.236.71.65:8545"));
+var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
 
 //veri blockchain üzerinde sıkıştırılmış tutuluyor daha sonra hash değeri tutulacak
 var zlib = require('zlib');
