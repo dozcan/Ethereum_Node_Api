@@ -7,7 +7,7 @@ const cors = require('cors');
 
 //var requestUrl = "http://"+process.env.NODE_IP+":"+process.env.NODE_PORT;
 // default rpc port 8545, ikinci container portuna dönüştürülebilinir.
-var web3 = new Web3(new Web3.providers.HttpProvider("http://35.165.117.243:8545"));
+var web3 = new Web3(new Web3.providers.HttpProvider("http://18.236.71.65:8545"));
 
 //veri blockchain üzerinde sıkıştırılmış tutuluyor daha sonra hash değeri tutulacak
 var zlib = require('zlib');
@@ -259,8 +259,29 @@ app.post('/Identity',function(req,res){
               console.log("baslıyoruz");   
               try{
              
-                  hashTransactionOfSetMethod = await Identity(contractInstance,accounts[0],hashedData,
-                    blockchainDataName,blockchainDataSurname,data);
+                
+
+                    await contractClone.methods.setIdentity(hashedData,blockchainDataName,blockchainDataSurname,data).
+                    send({
+                      from:accounts[0],
+                      gas:'1000000000'
+                    },function (err, result){
+                        if(!err){
+                          
+                          console.log(result);   
+                          hashTransactionOfSetMethod = result;      
+                        } 
+                        else{
+                          hashTransactionOfSetMethod = "";
+                          errorCode = requestTypeError.identity;
+                          errorMessage = helper.error(errorCode,err);
+                          response = responseMaker.responseErrorMaker(errorCode,errorMessage);
+                          res.send(response);
+                        }
+                      });
+
+
+
                   key = ["account","data_hash","transaction_hash"];
                   console.log("identity:");
                   console.log(data);
@@ -290,28 +311,7 @@ app.post('/Identity',function(req,res){
     set();    
 });
 
-const Identity = async(contractClone,account,hashedData,name,surname,identity) => {
-  try{
-    var hash;
-    await contractClone.methods.setIdentity(hashedData,name,surname,identity).
-    send({
-      from:account,
-      gas:'1000000000'
-    },function (error, result){
-        if(!error){
-          console.log(result);   
-          hash = result;      
-        } 
-        else{
-          throw (error);
-        }
-      });
-      return hash;
-    }
-    catch(err){
-      throw (err)
-    }
-}
+
 
 app.post('/HashGetTest',function(req,res){
 
@@ -423,7 +423,6 @@ const getIdentity = async(contractClone,account,hash)=>{
 module.exports = {
   AccountCreate,
   DeployContract,
-  Identity,
   getIdentity
 }
 
