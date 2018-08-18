@@ -12,7 +12,7 @@ RUN npm install node-gyp
 RUN npm install scrypt
 RUN npm install web3 
 
-
+#--unsafe-perm=true --allow-root
 ARG NODE_IP
 ARG NODE_PORT
 
