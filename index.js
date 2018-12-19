@@ -193,9 +193,9 @@ app.post('/set',function(req,res){
                contractInstance = await new web3.eth.Contract(JSON.parse(interface),contractAddress);
             } 
              try{
-                    string[] code = ["acm1","acm2"];
-                    string[] date1 = ["200","201"];
-                    string[] date2 = ["202","203"];
+                    var code = ["acm1","acm2"];
+                    var date1 = ["200","201"];
+                    var date2 = ["202","203"];
                     accounts = await web3.eth.getAccounts();
                     await contractInstance.methods.update(2,clientAddress,code,date1,date2).
                     send({
@@ -219,11 +219,8 @@ app.post('/set',function(req,res){
 
 
                   key = ["account","data_hash","transaction_hash"];
-                  console.log("identity:");
-                  console.log(data);
-                  console.log("hash");
-                  console.log(hashedData);
-                  value = [accounts[0],hashedData,hashTransactionOfSetMethod];
+                 
+                  value = ["0","0","0];
                   rawResponseObject = responseMaker.createResponse(key,value);     
                   response = responseMaker.responseMaker(rawResponseObject);
                   res.send(response);                  
@@ -361,7 +358,7 @@ app.post('/HashGetTest',function(req,res){
           };
 
           key = ["data","data_hash"];
-          value = [responseRaw,hashofBlockchainData];
+          value = ["0","0"];
           rawResponseObject = responseMaker.createResponse(key,value);
           response = responseMaker.responseMaker(rawResponseObject);
           res.send(response); 
