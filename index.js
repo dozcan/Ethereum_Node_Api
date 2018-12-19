@@ -179,51 +179,72 @@ const DeployContract = async(provider,interface,bytecode,account) =>{
   }
 }
 
-app.post('/IdentityTest',function(req,res){
+app.post('/set',function(req,res){
 
   var set = async() => {
     try{
-            let blockchainDataName = JSON.stringify(req.body.data.name);
-            let blockchainDataSurname = JSON.stringify(req.body.data.surname);
-            let blockchainDataIdentity = JSON.stringify(req.body.data.identity);
-            let contractAddressFromClient = JSON.stringify(req.body.address);
-            contractAddressFromClient = helper.cleanWhiteCharacter(contractAddressFromClient);
-            blockchainDataName = helper.cleanWhiteCharacter(blockchainDataName);
-            blockchainDataSurname = helper.cleanWhiteCharacter(blockchainDataSurname);
-            blockchainDataIdentity = helper.cleanWhiteCharacter(blockchainDataIdentity);
-            var hashedData = helper.sha256Hash(blockchainDataIdentity);
-            bytes = [];    
-
-
-            var data = helper.byteConversion(blockchainDataIdentity);      
-         
-
-            try{
+            let clientAddress = JSON.stringify(req.body.clientAddress);
+            let contractAddress = JSON.stringify(req.body.contractAddress);
       
-                hashTransactionOfSetMethod = "09232";
-                key = ["account","data_hash","transaction_hash"];
-                value = [accounts[0],hashedData,hashTransactionOfSetMethod];
-                rawResponseObject = responseMaker.createResponse(key,value);     
-                response = responseMaker.responseMaker(rawResponseObject);
-                res.send(response);                  
+            clientAddress = helper.cleanWhiteCharacter(clientAddress);
+            contractAddress = helper.cleanWhiteCharacter(contractAddress)
+            if(contractInstance === undefined || contractInstance === null)
+            {
+               contractInstance = await new web3.eth.Contract(JSON.parse(interface),contractAddress);
             } 
-            catch(err){
-                errorCode = requestTypeError.identity_transactional_hash;
-                errorMessage =  helper.error(errorCode,err);
-                response = responseMaker.responseErrorMaker(errorCode,errorMessage);
-                res.send(response);
-            }
-                       
+             try{
+                    string[] code = ["acm1","acm2"];
+                    string[] date1 = ["200","201"];
+                    string[] date2 = ["202","203"];
+                    accounts = await web3.eth.getAccounts();
+                    await contractInstance.methods.update(2,clientAddress,code,date1,date2).
+                    send({
+                      from:accounts[0],
+                      gas:'100000000'
+                    },function (err, result){
+                        if(!err){
+                          
+                          console.log(result);   
+                          hashTransactionOfSetMethod = result;      
+                        } 
+                        else{
+                          hashTransactionOfSetMethod = "";
+                          errorCode = requestTypeError.identity;
+                          errorMessage = helper.error(errorCode,err);
+                          response = responseMaker.responseErrorMaker(errorCode,errorMessage);
+                          res.send(response);
+                        }
+                      });
+
+
+
+                  key = ["account","data_hash","transaction_hash"];
+                  console.log("identity:");
+                  console.log(data);
+                  console.log("hash");
+                  console.log(hashedData);
+                  value = [accounts[0],hashedData,hashTransactionOfSetMethod];
+                  rawResponseObject = responseMaker.createResponse(key,value);     
+                  response = responseMaker.responseMaker(rawResponseObject);
+                  res.send(response);                  
+              } 
+              catch(err){
+                  errorCode = requestTypeError.identity_transactional_hash;
+                  errorMessage =  helper.error(errorCode,err);
+                  response = responseMaker.responseErrorMaker(errorCode,errorMessage);
+                  res.send(response);
+              }
+                         
+      }
+      catch(err)
+      {
+        errorCode = requestTypeError.identity;
+        errorMessage = helper.error(errorCode,err);
+        response = responseMaker.responseErrorMaker(errorCode,errorMessage);
+        res.send(response);
+      }
     }
-    catch(err)
-    {
-      errorCode = requestTypeError.identity;
-      errorMessage = helper.error(errorCode,err);
-      response = responseMaker.responseErrorMaker(errorCode,errorMessage);
-      res.send(response);
-    }
-  }
-  set();    
+    set();   
 });
 
 /*Veriyi blockchain'e göndermek için rest api url
@@ -237,6 +258,7 @@ app.post('/Identity',function(req,res){
 
     var set = async() => {
       try{
+          
               let blockchainDataName = JSON.stringify(req.body.data.name);
               let blockchainDataSurname = JSON.stringify(req.body.data.surname);
               let blockchainDataIdentity = JSON.stringify(req.body.data.identity);
@@ -258,9 +280,7 @@ app.post('/Identity',function(req,res){
               console.log(data);
               console.log("baslıyoruz");   
               try{
-             
-                
-
+            
                     await contractInstance.methods.setIdentity(hashedData,blockchainDataName,blockchainDataSurname,data).
                     send({
                       from:accounts[0],
@@ -319,19 +339,29 @@ app.post('/HashGetTest',function(req,res){
 
       try
         {
-          let contractAddressFromClient = JSON.stringify(req.body.address);
-          let hashofBlockchainData = JSON.stringify(req.body.hashofBlockchainData);
-          contractAddressFromClient = helper.cleanWhiteCharacter(contractAddressFromClient);
-          hashofBlockchainData = helper.cleanWhiteCharacter(hashofBlockchainData);
-          
+          let address = JSON.stringify(req.body.address);
+          address = helper.cleanWhiteCharacter(address);
+           
+          accounts = await web3.eth.getAccounts();
+
+          var respondData = await get(address);
+
+          var name =respondData[0];
+          console.log("name:" +name);
+          var surname =respondData[1];
+          console.log("surname:" +surname);
+          var identity =respondData[2];
+          console.log("identity:" +identity);
+
+
           var responseRaw = {
-            name:"doga",
-            surname:"ozcan",
-            identity:"0x21894343"
+            name:name,
+            surname:surname,
+            identity:identity
           };
-              
+
           key = ["data","data_hash"];
-          value = [responseRaw,"0zdferer"];
+          value = [responseRaw,hashofBlockchainData];
           rawResponseObject = responseMaker.createResponse(key,value);
           response = responseMaker.responseMaker(rawResponseObject);
           res.send(response); 
