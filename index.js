@@ -185,7 +185,7 @@ app.post('/Authorities',function(req,res){
     try{
             let clientAddress = JSON.stringify(req.body.contractAddress);
             let ethereumAddress = JSON.stringify(req.body.ethereumAddress);
-            let authorities = JSON.stringify(req.body.authorities);
+            let authorities = JSON.parse(req.body.authorities);
             clientAddress = helper.cleanWhiteCharacter(clientAddress);
             ethereumAddress = helper.cleanWhiteCharacter(ethereumAddress);
             authorities = helper.cleanWhiteCharacter(authorities);
@@ -204,7 +204,7 @@ app.post('/Authorities',function(req,res){
                     })
                     
                     
-                    await contractInstance.methods.update(2,clientAddress,screenCode,startDate,endDate).
+                    await contractInstance.methods.update(screenCode.length,clientAddress,screenCode,startDate,endDate).
                     send({
                       from:accounts[0],
                       gas:'100000000'
