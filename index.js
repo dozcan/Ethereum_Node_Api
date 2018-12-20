@@ -5,7 +5,7 @@ const requestTypeError = require('./enum.js');
 const Web3 = require('web3');
 const cors = require('cors');
 
-var requestUrl = "http://"+process.env.NODE_IP+":"+process.env.NODE_PORT;
+var requestUrl = "http://34.223.2.240:8545";
 // default rpc port 8545, ikinci container portuna dönüştürülebilinir.
 var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
 
@@ -179,36 +179,44 @@ const DeployContract = async(provider,interface,bytecode,account) =>{
   }
 }
 
-app.post('/set',function(req,res){
+app.post('/Authorities',function(req,res){
 
   var set = async() => {
     try{
-            let clientAddress = JSON.stringify(req.body.clientAddress);
-            let contractAddress = JSON.stringify(req.body.contractAddress);
-      
+            let clientAddress = JSON.stringify(req.body.contractAddress);
+            let ethereumAddress = JSON.stringify(req.body.ethereumAddress);
+            let authorities = JSON.stringify(req.body.authorities);
             clientAddress = helper.cleanWhiteCharacter(clientAddress);
-            contractAddress = helper.cleanWhiteCharacter(contractAddress)
-            if(contractInstance === undefined || contractInstance === null)
-            {
-               contractInstance = await new web3.eth.Contract(JSON.parse(interface),contractAddress);
-            } 
+            ethereumAddress = helper.cleanWhiteCharacter(ethereumAddress);
+            authorities = helper.cleanWhiteCharacter(authorities);
+            var screenCode = [];
+            var startDate = [];
+            var endDate = [];
+
+ 
              try{
-                    var code = ["acm1","acm2"];
-                    var date1 = ["200","201"];
-                    var date2 = ["202","203"];
+
                     accounts = await web3.eth.getAccounts();
-                    await contractInstance.methods.update(2,clientAddress,code,date1,date2).
+                    authorities.forEach(element=>{
+                      screenCode.push( helper.byteConversion(element.screenCode));
+                      startDate.push( helper.byteConversion(element.startDate));
+                      endDate.push( helper.byteConversion(element.endDate));
+                    })
+                    
+                    
+                    await contractInstance.methods.update(2,clientAddress,screenCode,startDate,endDate).
                     send({
                       from:accounts[0],
                       gas:'100000000'
                     },function (err, result){
                         if(!err){
-                          
+                          console.log("hatamız yok");
                           console.log(result);   
-                          hashTransactionOfSetMethod = result;      
+                            
                         } 
                         else{
-                          hashTransactionOfSetMethod = "";
+                          console.log("hata",err)
+                         
                           errorCode = requestTypeError.identity;
                           errorMessage = helper.error(errorCode,err);
                           response = responseMaker.responseErrorMaker(errorCode,errorMessage);
@@ -219,8 +227,11 @@ app.post('/set',function(req,res){
 
 
                   key = ["account","data_hash","transaction_hash"];
-                 
-                  value = ["0","0","0];
+                  console.log("identity:");
+                  
+                  console.log("hash");
+                
+                  value = ["0","0","0"];
                   rawResponseObject = responseMaker.createResponse(key,value);     
                   response = responseMaker.responseMaker(rawResponseObject);
                   res.send(response);                  
@@ -336,26 +347,16 @@ app.post('/HashGetTest',function(req,res){
 
       try
         {
-          let address = JSON.stringify(req.body.address);
-          address = helper.cleanWhiteCharacter(address);
+          let ethereumAddress = JSON.stringify(req.body.ethereumAddress);
+          ethereumAddress = helper.cleanWhiteCharacter(ethereumAddress);
            
           accounts = await web3.eth.getAccounts();
-
-          var respondData = await get(address);
-
-          var name =respondData[0];
-          console.log("name:" +name);
-          var surname =respondData[1];
-          console.log("surname:" +surname);
-          var identity =respondData[2];
-          console.log("identity:" +identity);
-
-
-          var responseRaw = {
-            name:name,
-            surname:surname,
-            identity:identity
-          };
+          console.log("address:" +address);
+          
+          var respondData = await getIdentity(contractInstance,accounts[0],ethereumAddress);
+          console.log(respondData)
+          console.log(respondData[0])
+        
 
           key = ["data","data_hash"];
           value = ["0","0"];
@@ -437,9 +438,10 @@ app.post('/HashGet',function(req,res){
   get();
 });
 
-const getIdentity = async(contractClone,account,hash)=>{
+
+const getIdentity = async(contractClone,account,client)=>{
   try{
-    var data = await contractClone.methods.getIdentity(hash).call({from:account})
+    var data = await contractClone.methods.get(client).call({from:account})
     return data;
   }
   catch(err){
