@@ -368,7 +368,7 @@ app.post('/HashGetTest',function(req,res){
           respondData[1].forEach(element=>{
                   endDate.push(bin2string(element));
           })
-          for(int i=0;i<screenCode.length;i++){
+          for(var i=0;i<screenCode.length;i++){
               authorities.push(screenCode[i],startDate[i],endDate[i])
           }
           console.log(authorities);
