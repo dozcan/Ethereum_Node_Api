@@ -349,17 +349,33 @@ app.post('/HashGetTest',function(req,res){
         {
           let ethereumAddress = JSON.stringify(req.body.ethereumAddress);
           ethereumAddress = helper.cleanWhiteCharacter(ethereumAddress);
-           
+          var screenCode = [];
+          var startDate = [];
+          var endDate = [];
+          var authorities = []
+          
           accounts = await web3.eth.getAccounts();
           console.log("address:" +address);
           
           var respondData = await getIdentity(contractInstance,accounts[0],ethereumAddress);
-          console.log(respondData)
           console.log(respondData[0])
-        
-
-          key = ["data","data_hash"];
-          value = ["0","0"];
+          respondData[0].forEach(element=>{
+                  screenCode.push(bin2string(element));     
+          })
+          respondData[1].forEach(element=>{
+                  startDate.push(bin2string(element));
+          })
+          respondData[1].forEach(element=>{
+                  endDate.push(bin2string(element));
+          })
+          for(int i=0;i<screenCode.length;i++){
+              authorities.push(screenCode[i],startDate[i],endDate[i])
+          }
+          console.log(authorities);
+          
+          
+          key = ["authorities"];
+          value = [JSON.parse(authorities)];
           rawResponseObject = responseMaker.createResponse(key,value);
           response = responseMaker.responseMaker(rawResponseObject);
           res.send(response); 
