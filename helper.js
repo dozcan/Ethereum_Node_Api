@@ -38,12 +38,19 @@ var cleanWhiteCharacter = function(address){
      address = reverseString(address);
      return address;
 }
-
+var bin2string = function bin2string(array){
+	var result = "";
+	for(var i = 0; i < array.length; ++i){
+		result+= (String.fromCharCode(array[i]));
+	}
+	return result;
+}
 
 module.exports = {
     error,
     sha256Hash,
     cleanWhiteCharacter,
-    byteConversion
+    byteConversion,
+    bin2string
 };
 
