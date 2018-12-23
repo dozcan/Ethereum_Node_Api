@@ -13,25 +13,41 @@ contract privileges {
     }
     
     bytes32[]  screen_code_list;
-    bytes32[] starting_date_list;
-    bytes32[] ending_date_list;
-    mapping(address => privilege) privilege_list;
-    mapping(address => uint) screenCountSize;
+    bytes32[]  starting_date_list;
+    bytes32[]  ending_date_list;
     
-    function update(uint newSize,string __privilegeOwner,bytes32[]  screenCode,bytes32[]  startingDate,bytes32[]  endingDate) public returns (bool){
+    mapping(address => privilege) privilege_list;
+    mapping(address => uint) privilege_owner_count;
+ 
+   
+     function insert(uint newSize,string __privilegeOwner,bytes32[]  screenCode,bytes32[]  startingDate,bytes32[]  endingDate) public returns (bool){
         address privilegeOwner = parseAddr(__privilegeOwner);
-        delete privilege_list[privilegeOwner]._screenPrivileges;
-     
+        privilege_owner_count[privilegeOwner] = newSize;
         
         for(uint i=0;i<newSize;i++){
             screenPrivileges memory localdata = screenPrivileges(screenCode[i],startingDate[i],endingDate[i]);
             privilege_list[privilegeOwner]._screenPrivileges.push(localdata);
         }
-        screenCountSize[privilegeOwner] = newSize;
+        return true;
+     }
+    
+    function update(uint newSize,string __privilegeOwner,bytes32[]  screenCode,bytes32[]  startingDate,bytes32[]  endingDate) public returns (bool){
+        address privilegeOwner = parseAddr(__privilegeOwner);
+        privilege_owner_count[privilegeOwner] = newSize;
+        delete privilege_list[privilegeOwner]._screenPrivileges;
+        
+        for(uint i=0;i<newSize;i++){
+            screenPrivileges memory localdata = screenPrivileges(screenCode[i],startingDate[i],endingDate[i]);
+            privilege_list[privilegeOwner]._screenPrivileges.push(localdata);
+        }
         return true;
     }
     function get(string __privilegeOwner) public returns (bytes32[]  screenCode,bytes32[]   startingDate,bytes32[]   endingDate){
         address privilegeOwner = parseAddr(__privilegeOwner);
+        delete screen_code_list;
+        delete starting_date_list;
+        delete ending_date_list;
+        
         for(uint i=0;i<privilege_list[privilegeOwner]._screenPrivileges.length;i++){
               screen_code_list.push(privilege_list[privilegeOwner]._screenPrivileges[i].screen_code);
               starting_date_list.push(privilege_list[privilegeOwner]._screenPrivileges[i].starting_date);
@@ -40,7 +56,7 @@ contract privileges {
         return (screen_code_list,starting_date_list,ending_date_list);
     }
     
-    function parseAddr(string _a) internal returns (address){
+    function parseAddr(string _a) public pure returns (address){
         bytes memory tmp = bytes(_a);
         uint160 iaddr = 0;
         uint160 b1;
