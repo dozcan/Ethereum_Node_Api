@@ -8,6 +8,11 @@ const cors = require('cors');
 var requestUrl = "http://34.223.2.240:8545";
 // default rpc port 8545, ikinci container portuna dönüştürülebilinir.
 var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
+/*
+const web3 = new Web3('http://localhost:8545');
+// or
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+*/
 
 //veri blockchain üzerinde sıkıştırılmış tutuluyor daha sonra hash değeri tutulacak
 var zlib = require('zlib');
