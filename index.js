@@ -5,7 +5,7 @@ const requestTypeError = require('./enum.js');
 const Web3 = require('web3');
 const cors = require('cors');
 
-var requestUrl = "http://34.223.2.240:8545";
+var requestUrl = "http://18.236.226.143:8545";
 // default rpc port 8545, ikinci container portuna dönüştürülebilinir.
 var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
 var express = require('express');
