@@ -1,6 +1,6 @@
 pragma solidity >=0.2.0 <0.8.0;
 
-contract urunTarla {
+contract urunTarlaContract {
     
     struct tarla {
         bytes enlem;
