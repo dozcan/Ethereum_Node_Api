@@ -103,7 +103,7 @@ app.get('/DeployContract', function (req, res) {
         try {
 
             //await AccountCreate(web3);
-            account = await new web3.eth.getAccounts();
+            let _account = await provider.eth.accounts.create();
             /*balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
@@ -112,13 +112,13 @@ app.get('/DeployContract', function (req, res) {
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
             */
-            console.log(account[0]);
-            contractInstance = await DeployContract(web3, interface, bytecode, account[0]);
+            console.log(_account);
+            contractInstance = await DeployContract(web3, interface, bytecode, _account);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
-            key = ["account", "contract", "balance", "gas", "block"];
-            value = [accounts[0], contractAddress, balance / 1000000000000000000, gasPrice, currentBlock];
+            key = ["account" ];
+            value = [_account];
             rawResponseObject = responseMaker.createResponse(key, value);
             response = responseMaker.responseMaker(rawResponseObject);
             res.send(response);
