@@ -117,7 +117,7 @@ const DeployContract = async (provider, interface, bytecode, account) => {
     try {
         contractClone = await new provider.eth.Contract(JSON.parse(interface))
             .deploy({ data: '0x' + bytecode })
-            .eth_sendRawTransaction({
+            .sendTransaction({
                 from: account,
                 gas: '1000000'
             });
