@@ -128,7 +128,7 @@ app.get('/DeployContract', function (req, res) {
             errorMessage = helper.error(errorCode, err);
             console.log(errorCode);
             response = responseMaker.responseErrorMaker(errorCode, errorMessage);
-            res.send(response);
+            res.send(err);
         }
     }
     deploy();
