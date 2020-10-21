@@ -17,6 +17,7 @@ var bodyParser = require('body-parser');
 app.use(cors());
 app.use(bodyParser.json({ limit: 1024 * 1024 * 1024, type: 'application/json' }));
 
+let account;
 let accounts = [];
 let contractAddress;
 let contractInstance;
@@ -101,7 +102,7 @@ app.get('/DeployContract', function (req, res) {
     var deploy = async () => {
         try {
 
-            accounts = await web3.eth.getAccounts();
+            account = await AccountCreate(web3);
             /*balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
@@ -110,8 +111,8 @@ app.get('/DeployContract', function (req, res) {
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
             */
-            console.log("acc",accounts[0],interface,bytecode);
-            contractInstance = await DeployContract(web3, interface, bytecode, accounts[0]);
+            console.log("acc",account,interface,bytecode);
+            contractInstance = await DeployContract(web3, interface, bytecode, account);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
