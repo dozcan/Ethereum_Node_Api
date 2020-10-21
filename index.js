@@ -137,7 +137,8 @@ app.get('/DeployContract', function (req, res) {
 
 const DeployContract = async (provider, interface, bytecode, account) => {
     try {
-        let _from = await new web3.toChecksumAddress(account);
+        
+        let _from = Web3.utils.toChecksumAddress(account);
         console.log("from",_from)
         contractClone = await new provider.eth.Contract(JSON.parse(interface))
             .deploy({ data: '0x' + bytecode })
