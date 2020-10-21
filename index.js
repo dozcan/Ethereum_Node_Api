@@ -79,7 +79,7 @@ app.get('/DeployContract', function (req, res) {
     var deploy = async () => {
         try {
 
-            accounts = await web3.eth.getAccounts();
+            /*accounts = await web3.eth.getAccounts();
             console.log("account adresi: " + accounts);
             balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
@@ -88,8 +88,10 @@ app.get('/DeployContract', function (req, res) {
             currentBlock = await web3.eth.getBlockNumber();
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
-
-            contractInstance = await DeployContract(web3, interface, bytecode, accounts[0]);
+            */
+            let _account = await AccountCreate(web3);
+            console.log(_account,_account.toString())
+            contractInstance = await DeployContract(web3, interface, bytecode, _account);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
