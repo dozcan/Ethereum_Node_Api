@@ -18,8 +18,6 @@ app.use(cors());
 app.use(bodyParser.json({ limit: 1024 * 1024 * 1024, type: 'application/json' }));
 
 let accounts = [];
-const input = fs.readFileSync('Token.sol');
-const output = solc.compile(input.toString(), 1);
 let contractAddress;
 let contractInstance;
 let hashTransactionOfSetMethod;
