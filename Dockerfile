@@ -12,13 +12,6 @@ RUN npm install node-gyp
 RUN npm install scrypt
 RUN npm install web3 
 
-#--unsafe-perm=true --allow-root
-ARG NODE_IP
-ARG NODE_PORT
-
-ENV NODE_IP ${NODE_IP}
-ENV NODE_PORT ${NODE_PORT}
-
 EXPOSE 6000
 CMD [ "index.js" ]
 ENTRYPOINT ["node"]
