@@ -91,7 +91,7 @@ app.get('/DeployContract', function (req, res) {
             */
             let _account = await AccountCreate(web3);
             console.log(_account,_account.toString())
-            contractInstance = await DeployContract(web3, interface, bytecode, _account);
+            contractInstance = await DeployContract(web3, interface, bytecode, _account.address);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
