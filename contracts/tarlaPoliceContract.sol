@@ -33,7 +33,7 @@ contract tarlaPoliceContract {
         bytes memory _sigortaTutar,
         bytes memory _tckn)public returns (bytes32 policeUniqId){
          
-        bytes32 policeUniqId = keccak256(_tckn);
+        policeUniqId = keccak256(_tckn);
         policeler[policeUniqId] = police(_acente,_sigortaBaslangic,_sigortaBitis,_sigortaTur,_sigortaTutar,_tckn);
         return policeUniqId;
         }
@@ -71,4 +71,3 @@ contract tarlaPoliceContract {
             return (tarlalar[createdTarlaId].urunTipi,tarlalar[createdTarlaId].sahipTckn);
         }
 }
-    
