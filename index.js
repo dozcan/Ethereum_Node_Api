@@ -103,7 +103,7 @@ app.get('/DeployContract', function (req, res) {
         try {
 
             //await AccountCreate(web3);
-            let _account = await provider.eth.accounts.create();
+            let _account = await web3.eth.accounts.create();
             /*balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
