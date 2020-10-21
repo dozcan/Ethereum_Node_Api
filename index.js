@@ -41,6 +41,7 @@ app.get('/AccountCreate', function (req, res) {
 
     var create = async () => {
         try {
+            console.log("basladık");
             account = await AccountCreate(web3);
             console.log("yaratılan account :" + account.address);
             console.log("private key :" + account.privateKey);
