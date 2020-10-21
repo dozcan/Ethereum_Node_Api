@@ -17,8 +17,9 @@ var bodyParser = require('body-parser');
 app.use(cors());
 app.use(bodyParser.json({ limit: 1024 * 1024 * 1024, type: 'application/json' }));
 
-let account;
 let accounts = [];
+const input = fs.readFileSync('Token.sol');
+const output = solc.compile(input.toString(), 1);
 let contractAddress;
 let contractInstance;
 let hashTransactionOfSetMethod;
@@ -34,27 +35,6 @@ var rawResponseObject;
 var key;
 var value;
 
-app.get('/test', function (req, res) {
-
-    var create = async () => {
-        try {
-            console.log("basladık");
-            key = ["account", "key"];
-            value = ["sdfsdfs", "wewe"];
-            rawResponseObject = responseMaker.createResponse(key, value);
-            response = responseMaker.responseMaker(rawResponseObject);
-            res.send(response);
-        }
-        catch (err) {
-            errorCode = requestTypeError.account_create;
-            errorMessage = helper.error(errorCode, err);
-            response = responseMaker.responseErrorMaker(errorCode, errorMessage);
-            res.send(response);
-        }
-    }
-    create();
-});
-
 /*Account yaratmak için rest api url
 *Çağırım : http://ip:port/AccountCreate
 *input : yok
@@ -63,7 +43,6 @@ app.get('/AccountCreate', function (req, res) {
 
     var create = async () => {
         try {
-            console.log("basladık");
             account = await AccountCreate(web3);
             console.log("yaratılan account :" + account.address);
             console.log("private key :" + account.privateKey);
@@ -102,23 +81,22 @@ app.get('/DeployContract', function (req, res) {
     var deploy = async () => {
         try {
 
-            //await AccountCreate(web3);
-            let _account = await web3.eth.accounts.create();
-            /*balance = await web3.eth.getBalance(accounts[0]);
+            accounts = await web3.eth.getAccounts();
+            console.log("account adresi: " + accounts);
+            balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
             gasPrice = await web3.eth.getGasPrice();
             currentBlock = await web3.eth.getBlockNumber();
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
-            */
-            console.log(_account);
-            contractInstance = await DeployContract(web3, interface, bytecode, _account);
+
+            contractInstance = await DeployContract(web3, interface, bytecode, accounts[0]);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
-            key = ["account" ];
-            value = [_account];
+            key = ["account", "contract", "balance", "gas", "block"];
+            value = [accounts[0], contractAddress, balance / 1000000000000000000, gasPrice, currentBlock];
             rawResponseObject = responseMaker.createResponse(key, value);
             response = responseMaker.responseMaker(rawResponseObject);
             res.send(response);
@@ -137,13 +115,10 @@ app.get('/DeployContract', function (req, res) {
 
 const DeployContract = async (provider, interface, bytecode, account) => {
     try {
-        
-        let _from = Web3.utils.toChecksumAddress(account);
-        console.log("from",_from)
         contractClone = await new provider.eth.Contract(JSON.parse(interface))
             .deploy({ data: '0x' + bytecode })
             .send({
-                from: _from,
+                from: account,
                 gas: '1000000'
             });
         return contractClone;
