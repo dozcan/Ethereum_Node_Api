@@ -2,15 +2,17 @@ const { interface, bytecode } = require('./compile.js');
 const helper = require('./helper.js');
 const responseMaker = require('./responseMaker.js');
 const requestTypeError = require('./enum.js');
-const Web3 = require('web3');
+
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
 
-var requestUrl = "http://18.236.226.143:8545";
-// default rpc port 8545, ikinci container portuna dönüştürülebilinir.
-var web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/6e32e89d0e2349748b38e1ca7aa46a7c"));
+
+const Web3   = require('web3');
+const ganache = require('ganache-cli');
+const web3Provider   = new Web3(ganache.provider());
+
 var express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
@@ -91,7 +93,7 @@ app.get('/DeployContract', function (req, res) {
             */
             let _account = await AccountCreate(web3);
             console.log(_account,_account.toString())
-            contractInstance = await DeployContract(web3, interface, bytecode, _account.address);
+            contractInstance = await DeployContract(web3Provider, interface, bytecode, _account.address);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
 
@@ -413,3 +415,4 @@ module.exports = {
 app.listen(6000, () => {
     console.log(6000 + " portu dinleniyor");
 });
+
