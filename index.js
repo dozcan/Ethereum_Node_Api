@@ -102,14 +102,15 @@ app.get('/DeployContract', function (req, res) {
         try {
 
             accounts = await web3.eth.getAccounts();
-            balance = await web3.eth.getBalance(accounts[0]);
+            /*balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
             gasPrice = await web3.eth.getGasPrice();
             currentBlock = await web3.eth.getBlockNumber();
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
-
+            */
+            console.log("acc",accounts[0],interface,bytecode);
             contractInstance = await DeployContract(web3, interface, bytecode, accounts[0]);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
