@@ -33,6 +33,27 @@ var rawResponseObject;
 var key;
 var value;
 
+app.get('/test', function (req, res) {
+
+    var create = async () => {
+        try {
+            console.log("basladık");
+            key = ["account", "key"];
+            value = ["sdfsdfs", "wewe"];
+            rawResponseObject = responseMaker.createResponse(key, value);
+            response = responseMaker.responseMaker(rawResponseObject);
+            res.send(response);
+        }
+        catch (err) {
+            errorCode = requestTypeError.account_create;
+            errorMessage = helper.error(errorCode, err);
+            response = responseMaker.responseErrorMaker(errorCode, errorMessage);
+            res.send(response);
+        }
+    }
+    create();
+});
+
 /*Account yaratmak için rest api url
 *Çağırım : http://ip:port/AccountCreate
 *input : yok
