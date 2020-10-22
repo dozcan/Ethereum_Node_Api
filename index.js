@@ -2,17 +2,11 @@ const { interface, bytecode } = require('./compile.js');
 const helper = require('./helper.js');
 const responseMaker = require('./responseMaker.js');
 const requestTypeError = require('./enum.js');
-
+const Web3 = require('web3');
 const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-const solc = require('solc');
 
-
-const Web3   = require('web3');
-const ganache = require('ganache-cli');
-const web3Provider   = new Web3(ganache.provider());
-
+var requestUrl = "http://54.191.162.75:8545";
+var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
 var express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
@@ -81,8 +75,7 @@ app.get('/DeployContract', function (req, res) {
     var deploy = async () => {
         try {
 
-            /*accounts = await web3.eth.getAccounts();
-            console.log("account adresi: " + accounts);
+            accounts = await web3.eth.getAccounts();
             balance = await web3.eth.getBalance(accounts[0]);
             miningBool = await web3.eth.isMining();
             hashRate = await web3.eth.getHashrate();
@@ -90,13 +83,11 @@ app.get('/DeployContract', function (req, res) {
             currentBlock = await web3.eth.getBlockNumber();
             console.log("account adresi: " + accounts[0]);
             console.log("account bakiyesi: " + balance);
-            */
-            let _account = await AccountCreate(web3);
-            console.log(_account,_account.toString())
-            contractInstance = await DeployContract(web3Provider, interface, bytecode, _account.address);
+            
+            contractInstance = await DeployContract(web3, interface, bytecode, accounts[0]);
             contractAddress = contractInstance.options.address;
             console.log("akıllı sözleşme adresi :" + contractAddress);
-
+            
             key = ["account", "contract", "balance", "gas", "block"];
             value = [accounts[0], contractAddress, balance / 1000000000000000000, gasPrice, currentBlock];
             rawResponseObject = responseMaker.createResponse(key, value);
