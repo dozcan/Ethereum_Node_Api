@@ -157,7 +157,7 @@ app.get('/DeployContract',function(req,res){
     {    
       errorCode = requestTypeError.contract_deploy;
       errorMessage =  helper.error(errorCode,err);
-      console.log(errorCode);
+      console.log(err);
       response = responseMaker.responseErrorMaker(errorCode,errorMessage);
       res.send(response);
     }
@@ -167,6 +167,8 @@ app.get('/DeployContract',function(req,res){
 
 const DeployContract = async(provider,interface,bytecode,account) =>{
   try {
+    console.log(provider)
+    console.log(account)
     contractClone = await new provider.eth.Contract(JSON.parse(interface))
     .deploy({data:'0x' + bytecode})
     .send({
