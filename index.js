@@ -133,8 +133,8 @@ app.get('/DeployContract',function(req,res){
   var deploy = async()=>{
     try{
 
-      /*accounts = await web3.eth.getAccounts();
-      balance = await web3.eth.getBalance(accounts[0]);
+      let accoun = await web3.eth.getAccounts();
+      /*balance = await web3.eth.getBalance(accounts[0]);
       miningBool = await web3.eth.isMining();
       hashRate   = await web3.eth.getHashrate();
       gasPrice  = await web3.eth.getGasPrice();
@@ -143,7 +143,7 @@ app.get('/DeployContract',function(req,res){
       console.log("account bakiyesi: " + balance);
      */
       let _account = await AccountCreate(web3);
-      console.log()
+      console.log("ss",accoun,_account);
       contractInstance = await DeployContract(web3,interface,bytecode,_account.address);
       contractAddress = contractInstance.options.address;
       console.log("akıllı sözleşme adresi :" + contractAddress);
