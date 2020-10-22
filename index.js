@@ -98,7 +98,7 @@ app.get('/DeployContract', function (req, res) {
         catch (err) {
             errorCode = requestTypeError.contract_deploy;
             errorMessage = helper.error(errorCode, err);
-            console.log(errorCode);
+            console.log(err);
             response = responseMaker.responseErrorMaker(errorCode, errorMessage);
             res.send(response);
         }
