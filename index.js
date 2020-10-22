@@ -6,7 +6,7 @@ const Web3 = require('web3');
 const cors = require('cors');
 
 var requestUrl = "http://54.191.162.75:8545";
-var web3 = new Web3(new Web3.providers.HttpProvider(requestUrl));
+var web3 = new Web3.providers.HttpProvider(requestUrl));
 var express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
